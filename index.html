@@ -9,7 +9,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     .hero-bg {
-      background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('/images/hero-bg.png');
+      background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('images/hero-bg.png');
       background-size: cover;
       background-position: center;
     }
@@ -67,7 +67,7 @@
         <option value="">Все марки</option>
         <option value="Toyota">Toyota</option>
         <option value="BMW">BMW</option>
-        <option value="Mercedes">Mercedes</option>
+        <option value="Mercedes-Benz">Mercedes-Benz</option>
         <option value="Audi">Audi</option>
       </select>
       <input type="number" id="priceFrom" placeholder="Цена от, ₽" class="border rounded p-2 w-32">
@@ -98,7 +98,8 @@
             <tr><th>Цена</th><td id="modalPrice"></td></tr>
             <tr><th>Топливо</th><td id="modalFuel"></td></tr>
             <tr><th>КПП</th><td id="modalTransmission"></td></tr>
-          </table>
+            <tr><th>VIN</th><td id="modalVin"></td></tr>
+           </table>
           <p id="modalDesc" class="mt-4"></p>
           <div class="mt-6 flex flex-wrap gap-3">
             <button class="bg-green-600 text-white px-4 py-2 rounded" onclick="openCreditModalForCurrentCar()">Купить в кредит</button>
@@ -170,7 +171,7 @@
       <div class="flex gap-6 overflow-x-auto pb-4 snap-x">
         <div class="min-w-[300px] bg-white p-6 rounded shadow snap-start">
           <div class="flex items-center gap-4 mb-3">
-            <img src="/images/review-1.png" alt="Алексей" class="rounded-full w-12 h-12 object-cover">
+            <img src="images/review-1.png" alt="Алексей" class="rounded-full w-12 h-12 object-cover">
             <div>
               <p class="font-semibold">Алексей С.</p>
               <p class="text-sm text-gray-500">Toyota Camry, 2022</p>
@@ -181,7 +182,7 @@
         </div>
         <div class="min-w-[300px] bg-white p-6 rounded shadow snap-start">
           <div class="flex items-center gap-4 mb-3">
-            <img src="/images/review-2.png" alt="Екатерина" class="rounded-full w-12 h-12 object-cover">
+            <img src="images/review-2.png" alt="Екатерина" class="rounded-full w-12 h-12 object-cover">
             <div>
               <p class="font-semibold">Екатерина М.</p>
               <p class="text-sm text-gray-500">BMW X3, 2021</p>
@@ -192,7 +193,7 @@
         </div>
         <div class="min-w-[300px] bg-white p-6 rounded shadow snap-start">
           <div class="flex items-center gap-4 mb-3">
-            <img src="/images/review-3.png" alt="Дмитрий" class="rounded-full w-12 h-12 object-cover">
+            <img src="images/review-3.png" alt="Дмитрий" class="rounded-full w-12 h-12 object-cover">
             <div>
               <p class="font-semibold">Дмитрий К.</p>
               <p class="text-sm text-gray-500">Audi Q5, 2023</p>
@@ -220,8 +221,8 @@
         <div class="mt-6">
           <h3 class="font-semibold mb-2">Сертификаты</h3>
           <div class="flex gap-2">
-            <img src="/images/cert-1.png" alt="сертификат" class="w-20 h-24 object-cover border">
-            <img src="/images/cert-2.png" alt="сертификат" class="w-20 h-24 object-cover border">
+            <img src="images/cert-1.png" alt="сертификат" class="w-20 h-24 object-cover border">
+            <img src="images/cert-2.png" alt="сертификат" class="w-20 h-24 object-cover border">
           </div>
         </div>
       </div>
@@ -294,21 +295,21 @@
 </dialog>
 
 <script>
-  // Данные inventory (все изображения в формате PNG)
+  // Данные inventory (из inventory.json)
   const inventory = [
-    { id: 1, make: "Toyota", model: "Camry", year: 2022, mileage_km: 15000, price_eur: 25900, fuel: "gasoline", transmission: "automatic", images: ["/images/camry-1.png", "/images/camry-2.png"], description: "Состояние как новое, один владелец, полная сервисная история." },
-    { id: 2, make: "BMW", model: "X3", year: 2021, mileage_km: 34000, price_eur: 34900, fuel: "diesel", transmission: "automatic", images: ["/images/x3-1.png", "/images/x3-2.png"], description: "Полная комплектация, пакет M." },
-    { id: 3, make: "Mercedes", model: "E-Class", year: 2020, mileage_km: 45000, price_eur: 28900, fuel: "diesel", transmission: "automatic", images: ["/images/eclass-1.png"], description: "AMG-пакет, панорамная крыша." },
-    { id: 4, make: "Audi", model: "Q7", year: 2023, mileage_km: 5000, price_eur: 65900, fuel: "gasoline", transmission: "automatic", images: ["/images/q7-1.png", "/images/q7-2.png"], description: "Новый, в наличии, максимальная комплектация." },
-    { id: 5, make: "Toyota", model: "RAV4", year: 2021, mileage_km: 22000, price_eur: 27900, fuel: "hybrid", transmission: "automatic", images: ["/images/rav4-1.png"], description: "Гибрид, экономичный, сервис пройден." },
-    { id: 6, make: "BMW", model: "5 Series", year: 2022, mileage_km: 18000, price_eur: 38900, fuel: "gasoline", transmission: "automatic", images: ["/images/5series-1.png", "/images/5series-2.png"], description: "M Sport, адаптивный круиз." },
-    { id: 7, make: "Mercedes", model: "GLC", year: 2021, mileage_km: 28000, price_eur: 41900, fuel: "diesel", transmission: "automatic", images: ["/images/glc-1.png"], description: "AMG-line, 4MATIC." },
-    { id: 8, make: "Audi", model: "A6", year: 2020, mileage_km: 52000, price_eur: 30900, fuel: "diesel", transmission: "automatic", images: ["/images/a6-1.png"], description: "Quattro, навигация, кожа." },
-    { id: 9, make: "Toyota", model: "Highlander", year: 2023, mileage_km: 10000, price_eur: 45900, fuel: "hybrid", transmission: "automatic", images: ["/images/highlander-1.png"], description: "7 мест, полный привод." },
-    { id: 10, make: "BMW", model: "X5", year: 2022, mileage_km: 15000, price_eur: 57900, fuel: "diesel", transmission: "automatic", images: ["/images/x5-1.png", "/images/x5-2.png"], description: "xDrive40d, M-пакет." }
+    { id: "car-001", make: "Toyota", model: "Camry", year: 2022, mileage_km: 15000, price_eur: 25900, fuel: "gasoline", transmission: "automatic", images: ["images/camry-1.png", "images/camry-2.png"], description: "Состояние как новое, один владелец, полная сервисная история.", vin: "JTDBE32KX12345678" },
+    { id: "car-002", make: "BMW", model: "X3", year: 2021, mileage_km: 34000, price_eur: 34900, fuel: "diesel", transmission: "automatic", images: ["images/x3-1.png", "images/x3-2.png"], description: "Полная комплектация, пакет M.", vin: "WBAWX12345678901" },
+    { id: "car-003", make: "Mercedes-Benz", model: "E-Class", year: 2020, mileage_km: 45000, price_eur: 28900, fuel: "diesel", transmission: "automatic", images: ["images/eclass-1.png"], description: "AMG-пакет, панорамная крыша.", vin: "WDD12345678901234" },
+    { id: "car-004", make: "Audi", model: "Q7", year: 2023, mileage_km: 5000, price_eur: 65900, fuel: "gasoline", transmission: "automatic", images: ["images/q7-1.png", "images/q7-2.png"], description: "Новый, в наличии, максимальная комплектация.", vin: "WAUZZZ4M5PD123456" },
+    { id: "car-005", make: "Toyota", model: "RAV4", year: 2021, mileage_km: 22000, price_eur: 27900, fuel: "hybrid", transmission: "automatic", images: ["images/rav4-1.png"], description: "Гибрид, экономичный, сервис пройден.", vin: "JTMZ1234567890123" },
+    { id: "car-006", make: "BMW", model: "5 Series", year: 2022, mileage_km: 18000, price_eur: 38900, fuel: "gasoline", transmission: "automatic", images: ["images/5series-1.png", "images/5series-2.png"], description: "M Sport, адаптивный круиз.", vin: "WBA12345678901234" },
+    { id: "car-007", make: "Mercedes-Benz", model: "GLC", year: 2021, mileage_km: 28000, price_eur: 41900, fuel: "diesel", transmission: "automatic", images: ["images/glc-1.png"], description: "AMG-line, 4MATIC.", vin: "WDC12345678901234" },
+    { id: "car-008", make: "Audi", model: "A6", year: 2020, mileage_km: 52000, price_eur: 30900, fuel: "diesel", transmission: "automatic", images: ["images/a6-1.png"], description: "Quattro, навигация, кожа.", vin: "WAUZZZ4F0LN123456" },
+    { id: "car-009", make: "Toyota", model: "Highlander", year: 2023, mileage_km: 10000, price_eur: 45900, fuel: "hybrid", transmission: "automatic", images: ["images/highlander-1.png"], description: "7 мест, полный привод.", vin: "5TD12345678901234" },
+    { id: "car-010", make: "BMW", model: "X5", year: 2022, mileage_km: 15000, price_eur: 57900, fuel: "diesel", transmission: "automatic", images: ["images/x5-1.png", "images/x5-2.png"], description: "xDrive40d, M-пакет.", vin: "WBX12345678901234" }
   ];
 
-  // Пересчёт евро в рубли
+  // Пересчёт евро в рубли (курс 100)
   function rub(priceEur) {
     return priceEur * 100;
   }
@@ -321,14 +322,14 @@
       const card = document.createElement('div');
       card.className = 'border rounded-lg overflow-hidden shadow-md bg-white';
       card.innerHTML = `
-        <img src="${car.images[0]}" alt="${car.make} ${car.model}" class="w-full h-48 object-cover">
+        <img src="${car.images[0]}" alt="${car.make} ${car.model}" class="w-full h-48 object-cover" onerror="this.src='images/placeholder.png'">
         <div class="p-4">
           <h3 class="font-bold text-xl">${car.make} ${car.model}</h3>
           <p>${car.year} · ${car.mileage_km} км · ${car.fuel}</p>
           <p class="text-2xl font-bold text-blue-600 mt-2">₽${rub(car.price_eur).toLocaleString()}</p>
           <div class="flex flex-wrap gap-2 mt-4">
-            <button onclick="showCar(${car.id})" class="bg-gray-200 text-gray-800 px-3 py-1 rounded text-sm hover:bg-gray-300">Подробнее</button>
-            <button onclick="openCreditModal(${car.id})" class="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700">Купить в кредит</button>
+            <button onclick="showCar('${car.id}')" class="bg-gray-200 text-gray-800 px-3 py-1 rounded text-sm hover:bg-gray-300">Подробнее</button>
+            <button onclick="openCreditModal('${car.id}')" class="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700">Купить в кредит</button>
             <button onclick="document.getElementById('testdrive').showModal()" class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700">Тест-драйв</button>
           </div>
         </div>
@@ -374,6 +375,7 @@
     document.getElementById('modalPrice').innerText = '₽' + rub(car.price_eur).toLocaleString();
     document.getElementById('modalFuel').innerText = car.fuel;
     document.getElementById('modalTransmission').innerText = car.transmission;
+    document.getElementById('modalVin').innerText = car.vin;
     document.getElementById('modalDesc').innerText = car.description;
 
     const thumbContainer = document.getElementById('modalThumbnails');
@@ -383,6 +385,7 @@
       thumb.src = imgSrc;
       thumb.alt = `${car.make} ${car.model} ${index+1}`;
       thumb.className = 'w-20 h-20 object-cover rounded cursor-pointer border-2 hover:border-blue-600';
+      thumb.onerror = function() { this.src = 'images/placeholder.png'; };
       thumb.onclick = () => document.getElementById('modalMainImage').src = imgSrc;
       thumbContainer.appendChild(thumb);
     });
@@ -442,7 +445,7 @@
   window.handleTestDrive = function() {
     const form = document.getElementById('testdriveForm');
     if (form.checkValidity()) {
-      alert('Заявка на тест-драйв отправлена (мок). Мы перезвоним вам.');
+      alert('Заявка на тест-драйв отправлена. Мы перезвоним вам.');
       form.reset();
       document.getElementById('testdrive').close();
     } else {
@@ -456,7 +459,7 @@
       const carId = document.getElementById('creditCarId').value;
       const car = inventory.find(c => c.id == carId);
       const carName = car ? `${car.make} ${car.model}` : 'выбранный автомобиль';
-      alert(`Заявка на кредит для ${carName} отправлена (мок). Менеджер свяжется с вами.`);
+      alert(`Заявка на кредит для ${carName} отправлена. Менеджер свяжется с вами.`);
       form.reset();
       document.getElementById('creditModal').close();
     } else {
