@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Автосалон "Премьер Авто" – Купить авто с гарантией</title>
+  <meta name="description" content="Большой выбор новых и подержанных автомобилей. Кредит, трейд-ин, сервис. Запишитесь на тест-драйв сегодня!">
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .hero-bg {
+      background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('/images/hero-bg.png');
+      background-size: cover;
+      background-position: center;
+    }
+  </style>
+</head>
+<body class="font-sans antialiased">
+
+<!-- Header -->
+<header class="bg-white shadow sticky top-0 z-50">
+  <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+    <div class="text-2xl font-bold text-blue-700">Премьер Авто</div>
+    <nav class="hidden md:flex space-x-6 text-gray-700">
+      <a href="#catalog" class="hover:text-blue-600">Автомобили</a>
+      <a href="#offers" class="hover:text-blue-600">Акции</a>
+      <a href="#reviews" class="hover:text-blue-600">Отзывы</a>
+      <a href="#contacts" class="hover:text-blue-600">Контакты</a>
+    </nav>
+    <div class="hidden md:flex items-center space-x-4">
+      <a href="tel:+78001234567" class="text-gray-700">8 (800) 123-45-67</a>
+      <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition" onclick="document.getElementById('testdrive').showModal()">Тест-драйв</button>
+    </div>
+    <button class="md:hidden text-3xl" id="menuBtn">☰</button>
+  </div>
+  <!-- Мобильное меню -->
+  <div id="mobileMenu" class="hidden md:hidden bg-white border-t px-4 py-2 flex flex-col space-y-2">
+    <a href="#catalog">Автомобили</a>
+    <a href="#offers">Акции</a>
+    <a href="#reviews">Отзывы</a>
+    <a href="#contacts">Контакты</a>
+    <a href="tel:+78001234567">8 (800) 123-45-67</a>
+    <button class="bg-blue-600 text-white px-4 py-2 rounded" onclick="document.getElementById('testdrive').showModal()">Тест-драйв</button>
+  </div>
+</header>
+
+<main>
+  <!-- Hero -->
+  <section class="hero-bg text-white py-24 md:py-32">
+    <div class="container mx-auto px-4">
+      <h1 class="text-4xl md:text-5xl font-bold mb-4">Надёжные автомобили с проверкой</h1>
+      <p class="text-xl mb-8">Более 500 авто в наличии. Кредит от 3% / Трейд-ин / Гарантия 2 года</p>
+      <div class="flex flex-wrap gap-4">
+        <a href="#catalog" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition">Смотреть каталог</a>
+        <button class="bg-transparent border-2 border-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition" onclick="document.getElementById('testdrive').showModal()">Записаться на тест-драйв</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Каталог с фильтрацией -->
+  <section id="catalog" class="container mx-auto px-4 py-16">
+    <h2 class="text-3xl md:text-4xl font-bold mb-8">Автомобили в наличии</h2>
+    
+    <!-- Фильтры -->
+    <div class="flex flex-wrap gap-4 mb-8">
+      <select id="makeFilter" class="border rounded p-2">
+        <option value="">Все марки</option>
+        <option value="Toyota">Toyota</option>
+        <option value="BMW">BMW</option>
+        <option value="Mercedes">Mercedes</option>
+        <option value="Audi">Audi</option>
+      </select>
+      <input type="number" id="priceFrom" placeholder="Цена от, ₽" class="border rounded p-2 w-32">
+      <input type="number" id="priceTo" placeholder="Цена до, ₽" class="border rounded p-2 w-32">
+      <button id="applyFilter" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Применить</button>
+    </div>
+
+    <!-- Сетка карточек -->
+    <div id="catalogGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+  </section>
+
+  <!-- Модальное окно карточки авто -->
+  <dialog id="carModal" class="rounded-lg shadow-xl p-0 max-w-3xl w-full">
+    <div class="bg-white p-6">
+      <div class="flex justify-between items-start mb-4">
+        <h3 id="modalTitle" class="text-2xl font-bold"></h3>
+        <button onclick="document.getElementById('carModal').close()" class="text-3xl">&times;</button>
+      </div>
+      <div id="modalContent" class="grid md:grid-cols-2 gap-6">
+        <div>
+          <img id="modalMainImage" src="" alt="" class="w-full rounded mb-2">
+          <div id="modalThumbnails" class="flex gap-2 overflow-x-auto"></div>
+        </div>
+        <div>
+          <table class="w-full text-left">
+            <tr><th class="py-1">Год</th><td id="modalYear"></td></tr>
+            <tr><th>Пробег</th><td id="modalMileage"></td></tr>
+            <tr><th>Цена</th><td id="modalPrice"></td></tr>
+            <tr><th>Топливо</th><td id="modalFuel"></td></tr>
+            <tr><th>КПП</th><td id="modalTransmission"></td></tr>
+          </table>
+          <p id="modalDesc" class="mt-4"></p>
+          <div class="mt-6 flex flex-wrap gap-3">
+            <button class="bg-green-600 text-white px-4 py-2 rounded" onclick="openCreditModalForCurrentCar()">Купить в кредит</button>
+            <button class="bg-blue-600 text-white px-4 py-2 rounded" onclick="document.getElementById('testdrive').showModal()">Тест-драйв</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Калькулятор кредита -->
+  <section class="bg-gray-100 py-16">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl md:text-4xl font-bold mb-8">Кредитный калькулятор</h2>
+      <div class="grid md:grid-cols-2 gap-8 bg-white p-6 rounded shadow">
+        <div>
+          <label class="block mb-2">Стоимость авто, ₽</label>
+          <input type="range" id="price" min="500000" max="10000000" step="50000" value="2500000" class="w-full">
+          <output for="price" id="priceVal" class="block text-center text-xl font-semibold">2 500 000 ₽</output>
+
+          <label class="block mt-4 mb-2">Первоначальный взнос, ₽</label>
+          <input type="range" id="down" min="0" max="5000000" step="50000" value="500000" class="w-full">
+          <output for="down" id="downVal" class="block text-center text-xl font-semibold">500 000 ₽</output>
+
+          <label class="block mt-4 mb-2">Срок, месяцев</label>
+          <input type="range" id="term" min="6" max="84" step="1" value="36" class="w-full">
+          <output for="term" id="termVal" class="block text-center text-xl font-semibold">36 мес</output>
+
+          <label class="block mt-4 mb-2">Процентная ставка, %</label>
+          <input type="range" id="rate" min="3" max="20" step="0.1" value="7.5" class="w-full">
+          <output for="rate" id="rateVal" class="block text-center text-xl font-semibold">7.5%</output>
+        </div>
+        <div class="bg-blue-50 p-6 rounded flex flex-col justify-center">
+          <p class="text-lg">Ежемесячный платёж</p>
+          <p id="monthlyPayment" class="text-4xl font-bold text-green-600">0 ₽</p>
+          <p class="text-lg mt-4">Общая переплата</p>
+          <p id="overpayment" class="text-2xl font-semibold text-gray-800">0 ₽</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Акции / Трейд-ин -->
+  <section id="offers" class="container mx-auto px-4 py-16">
+    <h2 class="text-3xl md:text-4xl font-bold mb-8">Акции и предложения</h2>
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="border p-6 rounded shadow text-center">
+        <div class="text-5xl mb-4">🔄</div>
+        <h3 class="text-xl font-semibold mb-2">Трейд-ин</h3>
+        <p>Дополнительная скидка 50 000 ₽ при обмене</p>
+      </div>
+      <div class="border p-6 rounded shadow text-center">
+        <div class="text-5xl mb-4">💳</div>
+        <h3 class="text-xl font-semibold mb-2">Кредит 0%</h3>
+        <p>На первые 6 месяцев при первоначальном взносе от 50%</p>
+      </div>
+      <div class="border p-6 rounded shadow text-center">
+        <div class="text-5xl mb-4">🔧</div>
+        <h3 class="text-xl font-semibold mb-2">Сервис в подарок</h3>
+        <p>ТО-1 бесплатно при покупке любого авто</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Отзывы -->
+  <section id="reviews" class="bg-gray-100 py-16">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl md:text-4xl font-bold mb-8">Отзывы клиентов</h2>
+      <div class="flex gap-6 overflow-x-auto pb-4 snap-x">
+        <div class="min-w-[300px] bg-white p-6 rounded shadow snap-start">
+          <div class="flex items-center gap-4 mb-3">
+            <img src="/images/review-1.png" alt="Алексей" class="rounded-full w-12 h-12 object-cover">
+            <div>
+              <p class="font-semibold">Алексей С.</p>
+              <p class="text-sm text-gray-500">Toyota Camry, 2022</p>
+            </div>
+          </div>
+          <p class="text-gray-700">Отличный сервис, быстрый кредит. Машина как новая!</p>
+          <p class="text-xs text-gray-400 mt-2">12.03.2025</p>
+        </div>
+        <div class="min-w-[300px] bg-white p-6 rounded shadow snap-start">
+          <div class="flex items-center gap-4 mb-3">
+            <img src="/images/review-2.png" alt="Екатерина" class="rounded-full w-12 h-12 object-cover">
+            <div>
+              <p class="font-semibold">Екатерина М.</p>
+              <p class="text-sm text-gray-500">BMW X3, 2021</p>
+            </div>
+          </div>
+          <p>Помогли с выбором, оформили трейд-ин. Рекомендую!</p>
+          <p class="text-xs text-gray-400 mt-2">05.02.2025</p>
+        </div>
+        <div class="min-w-[300px] bg-white p-6 rounded shadow snap-start">
+          <div class="flex items-center gap-4 mb-3">
+            <img src="/images/review-3.png" alt="Дмитрий" class="rounded-full w-12 h-12 object-cover">
+            <div>
+              <p class="font-semibold">Дмитрий К.</p>
+              <p class="text-sm text-gray-500">Audi Q5, 2023</p>
+            </div>
+          </div>
+          <p>Большой выбор, адекватные цены. Спасибо менеджеру Ивану.</p>
+          <p class="text-xs text-gray-400 mt-2">21.01.2025</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- О нас / Контакты / Карта -->
+  <section id="contacts" class="container mx-auto px-4 py-16">
+    <h2 class="text-3xl md:text-4xl font-bold mb-8">Контакты</h2>
+    <div class="grid md:grid-cols-2 gap-8">
+      <div>
+        <p class="mb-2"><strong>Адрес:</strong> г. Москва, ул. Автомобильная, д. 1</p>
+        <p class="mb-2"><strong>Телефон:</strong> 8 (800) 123-45-67</p>
+        <p class="mb-2"><strong>Email:</strong> info@premier-auto.ru</p>
+        <p class="mb-4"><strong>График работы:</strong> ежедневно 9:00 – 21:00</p>
+        <div class="flex gap-4 text-3xl">
+          <a href="#">📘</a><a href="#">📷</a><a href="#">▶️</a>
+        </div>
+        <div class="mt-6">
+          <h3 class="font-semibold mb-2">Сертификаты</h3>
+          <div class="flex gap-2">
+            <img src="/images/cert-1.png" alt="сертификат" class="w-20 h-24 object-cover border">
+            <img src="/images/cert-2.png" alt="сертификат" class="w-20 h-24 object-cover border">
+          </div>
+        </div>
+      </div>
+      <div class="h-[300px] bg-gray-300 rounded">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2245.0!2d37.6176!3d55.7558!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTXCsDQ1JzIwLjgiTiAzN8KwMzcnMDMuNCJF!5e0!3m2!1sru!2sru!4v1234567890" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Footer -->
+<footer class="bg-gray-900 text-white py-8">
+  <div class="container mx-auto px-4 grid md:grid-cols-4 gap-6">
+    <div>
+      <h4 class="font-bold mb-3">Премьер Авто</h4>
+      <p class="text-sm text-gray-400">Официальный дилер. Гарантия качества.</p>
+    </div>
+    <div>
+      <h4 class="font-bold mb-3">Покупателям</h4>
+      <ul class="text-sm space-y-2 text-gray-400">
+        <li><a href="#">Политика конфиденциальности</a></li>
+        <li><a href="#">Условия кредитования</a></li>
+        <li><a href="#">Сервис и запчасти</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="font-bold mb-3">Соцсети</h4>
+      <div class="flex gap-4 text-2xl">...</div>
+    </div>
+    <div>
+      <p class="text-sm text-gray-400">© 2025 Премьер Авто. Все права защищены.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- Модальное окно тест-драйва -->
+<dialog id="testdrive" class="rounded p-6 max-w-md">
+  <h3 class="text-xl font-bold mb-4">Запись на тест-драйв</h3>
+  <form id="testdriveForm" onsubmit="event.preventDefault(); handleTestDrive()">
+    <input type="text" name="name" placeholder="Ваше имя" class="w-full border p-2 mb-3 rounded" required>
+    <input type="tel" name="phone" placeholder="Телефон" class="w-full border p-2 mb-3 rounded" required pattern="\+?[0-9\s\-\(\)]{10,}">
+    <input type="email" name="email" placeholder="Email" class="w-full border p-2 mb-3 rounded" required>
+    <label class="flex items-center gap-2 mb-4">
+      <input type="checkbox" name="consent" required>
+      <span class="text-sm">Согласие на обработку персональных данных</span>
+    </label>
+    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded w-full">Отправить</button>
+    <button type="button" onclick="document.getElementById('testdrive').close()" class="mt-2 text-gray-600 w-full">Закрыть</button>
+  </form>
+</dialog>
+
+<!-- Модальное окно для заявки на кредит -->
+<dialog id="creditModal" class="rounded p-6 max-w-md">
+  <h3 class="text-xl font-bold mb-4" id="creditModalTitle">Заявка на кредит</h3>
+  <form id="creditForm" onsubmit="event.preventDefault(); handleCreditSubmit()">
+    <input type="hidden" id="creditCarId" name="carId">
+    <p class="mb-3 text-gray-700" id="creditCarInfo">Выберите автомобиль</p>
+    <input type="text" name="name" placeholder="Ваше имя" class="w-full border p-2 mb-3 rounded" required>
+    <input type="tel" name="phone" placeholder="Телефон" class="w-full border p-2 mb-3 rounded" required pattern="\+?[0-9\s\-\(\)]{10,}">
+    <input type="email" name="email" placeholder="Email" class="w-full border p-2 mb-3 rounded" required>
+    <label class="block mb-2">Желаемый первоначальный взнос, ₽</label>
+    <input type="number" name="downPayment" placeholder="Например, 500000" class="w-full border p-2 mb-3 rounded">
+    <label class="flex items-center gap-2 mb-4">
+      <input type="checkbox" name="consent" required>
+      <span class="text-sm">Согласие на обработку персональных данных</span>
+    </label>
+    <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded w-full hover:bg-green-700">Отправить заявку</button>
+    <button type="button" onclick="document.getElementById('creditModal').close()" class="mt-2 text-gray-600 w-full">Закрыть</button>
+  </form>
+</dialog>
+
+<script>
+  // Данные inventory (все изображения в формате PNG)
+  const inventory = [
+    { id: 1, make: "Toyota", model: "Camry", year: 2022, mileage_km: 15000, price_eur: 25900, fuel: "gasoline", transmission: "automatic", images: ["/images/camry-1.png", "/images/camry-2.png"], description: "Состояние как новое, один владелец, полная сервисная история." },
+    { id: 2, make: "BMW", model: "X3", year: 2021, mileage_km: 34000, price_eur: 34900, fuel: "diesel", transmission: "automatic", images: ["/images/x3-1.png", "/images/x3-2.png"], description: "Полная комплектация, пакет M." },
+    { id: 3, make: "Mercedes", model: "E-Class", year: 2020, mileage_km: 45000, price_eur: 28900, fuel: "diesel", transmission: "automatic", images: ["/images/eclass-1.png"], description: "AMG-пакет, панорамная крыша." },
+    { id: 4, make: "Audi", model: "Q7", year: 2023, mileage_km: 5000, price_eur: 65900, fuel: "gasoline", transmission: "automatic", images: ["/images/q7-1.png", "/images/q7-2.png"], description: "Новый, в наличии, максимальная комплектация." },
+    { id: 5, make: "Toyota", model: "RAV4", year: 2021, mileage_km: 22000, price_eur: 27900, fuel: "hybrid", transmission: "automatic", images: ["/images/rav4-1.png"], description: "Гибрид, экономичный, сервис пройден." },
+    { id: 6, make: "BMW", model: "5 Series", year: 2022, mileage_km: 18000, price_eur: 38900, fuel: "gasoline", transmission: "automatic", images: ["/images/5series-1.png", "/images/5series-2.png"], description: "M Sport, адаптивный круиз." },
+    { id: 7, make: "Mercedes", model: "GLC", year: 2021, mileage_km: 28000, price_eur: 41900, fuel: "diesel", transmission: "automatic", images: ["/images/glc-1.png"], description: "AMG-line, 4MATIC." },
+    { id: 8, make: "Audi", model: "A6", year: 2020, mileage_km: 52000, price_eur: 30900, fuel: "diesel", transmission: "automatic", images: ["/images/a6-1.png"], description: "Quattro, навигация, кожа." },
+    { id: 9, make: "Toyota", model: "Highlander", year: 2023, mileage_km: 10000, price_eur: 45900, fuel: "hybrid", transmission: "automatic", images: ["/images/highlander-1.png"], description: "7 мест, полный привод." },
+    { id: 10, make: "BMW", model: "X5", year: 2022, mileage_km: 15000, price_eur: 57900, fuel: "diesel", transmission: "automatic", images: ["/images/x5-1.png", "/images/x5-2.png"], description: "xDrive40d, M-пакет." }
+  ];
+
+  // Пересчёт евро в рубли
+  function rub(priceEur) {
+    return priceEur * 100;
+  }
+
+  // Рендер каталога
+  function renderCatalog(items) {
+    const grid = document.getElementById('catalogGrid');
+    grid.innerHTML = '';
+    items.forEach(car => {
+      const card = document.createElement('div');
+      card.className = 'border rounded-lg overflow-hidden shadow-md bg-white';
+      card.innerHTML = `
+        <img src="${car.images[0]}" alt="${car.make} ${car.model}" class="w-full h-48 object-cover">
+        <div class="p-4">
+          <h3 class="font-bold text-xl">${car.make} ${car.model}</h3>
+          <p>${car.year} · ${car.mileage_km} км · ${car.fuel}</p>
+          <p class="text-2xl font-bold text-blue-600 mt-2">₽${rub(car.price_eur).toLocaleString()}</p>
+          <div class="flex flex-wrap gap-2 mt-4">
+            <button onclick="showCar(${car.id})" class="bg-gray-200 text-gray-800 px-3 py-1 rounded text-sm hover:bg-gray-300">Подробнее</button>
+            <button onclick="openCreditModal(${car.id})" class="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700">Купить в кредит</button>
+            <button onclick="document.getElementById('testdrive').showModal()" class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700">Тест-драйв</button>
+          </div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  // Открытие модалки кредита
+  window.openCreditModal = function(carId) {
+    const car = inventory.find(c => c.id === carId);
+    if (!car) return;
+    
+    document.getElementById('creditCarId').value = car.id;
+    document.getElementById('creditCarInfo').innerText = `Автомобиль: ${car.make} ${car.model}, ${car.year} г., цена ₽${rub(car.price_eur).toLocaleString()}`;
+    
+    const recommendedDown = Math.round(rub(car.price_eur) * 0.2 / 1000) * 1000;
+    document.querySelector('#creditForm input[name="downPayment"]').value = recommendedDown;
+    
+    document.getElementById('creditModal').showModal();
+  };
+
+  window.openCreditModalForCurrentCar = function() {
+    if (lastViewedCarId) {
+      openCreditModal(lastViewedCarId);
+    } else {
+      alert('Сначала выберите автомобиль');
+    }
+  };
+
+  let lastViewedCarId = null;
+
+  // Показ детальной карточки
+  window.showCar = function(id) {
+    const car = inventory.find(c => c.id === id);
+    if (!car) return;
+    lastViewedCarId = id;
+    
+    document.getElementById('modalTitle').innerText = `${car.make} ${car.model}`;
+    document.getElementById('modalMainImage').src = car.images[0];
+    document.getElementById('modalYear').innerText = car.year;
+    document.getElementById('modalMileage').innerText = car.mileage_km + ' км';
+    document.getElementById('modalPrice').innerText = '₽' + rub(car.price_eur).toLocaleString();
+    document.getElementById('modalFuel').innerText = car.fuel;
+    document.getElementById('modalTransmission').innerText = car.transmission;
+    document.getElementById('modalDesc').innerText = car.description;
+
+    const thumbContainer = document.getElementById('modalThumbnails');
+    thumbContainer.innerHTML = '';
+    car.images.forEach((imgSrc, index) => {
+      const thumb = document.createElement('img');
+      thumb.src = imgSrc;
+      thumb.alt = `${car.make} ${car.model} ${index+1}`;
+      thumb.className = 'w-20 h-20 object-cover rounded cursor-pointer border-2 hover:border-blue-600';
+      thumb.onclick = () => document.getElementById('modalMainImage').src = imgSrc;
+      thumbContainer.appendChild(thumb);
+    });
+
+    document.getElementById('carModal').showModal();
+  };
+
+  // Фильтрация
+  document.getElementById('applyFilter').addEventListener('click', () => {
+    const make = document.getElementById('makeFilter').value;
+    const priceFrom = parseFloat(document.getElementById('priceFrom').value) || 0;
+    const priceTo = parseFloat(document.getElementById('priceTo').value) || Infinity;
+    const filtered = inventory.filter(car => {
+      const priceRub = rub(car.price_eur);
+      return (make === '' || car.make === make) && priceRub >= priceFrom && priceRub <= priceTo;
+    });
+    renderCatalog(filtered);
+  });
+
+  // Кредитный калькулятор
+  function calculateCredit() {
+    const price = parseFloat(document.getElementById('price').value);
+    const down = parseFloat(document.getElementById('down').value);
+    const term = parseFloat(document.getElementById('term').value);
+    const rate = parseFloat(document.getElementById('rate').value) / 100 / 12;
+    const amount = price - down;
+    if (amount <= 0) {
+      document.getElementById('monthlyPayment').innerText = '0 ₽';
+      document.getElementById('overpayment').innerText = '0 ₽';
+      return;
+    }
+    const monthly = amount * rate * Math.pow(1 + rate, term) / (Math.pow(1 + rate, term) - 1);
+    const total = monthly * term;
+    const overpayment = total - amount;
+    document.getElementById('monthlyPayment').innerText = monthly.toFixed(2) + ' ₽';
+    document.getElementById('overpayment').innerText = overpayment.toFixed(2) + ' ₽';
+  }
+
+  document.getElementById('price').addEventListener('input', (e) => {
+    document.getElementById('priceVal').innerText = Number(e.target.value).toLocaleString() + ' ₽';
+    calculateCredit();
+  });
+  document.getElementById('down').addEventListener('input', (e) => {
+    document.getElementById('downVal').innerText = Number(e.target.value).toLocaleString() + ' ₽';
+    calculateCredit();
+  });
+  document.getElementById('term').addEventListener('input', (e) => {
+    document.getElementById('termVal').innerText = e.target.value + ' мес';
+    calculateCredit();
+  });
+  document.getElementById('rate').addEventListener('input', (e) => {
+    document.getElementById('rateVal').innerText = e.target.value + '%';
+    calculateCredit();
+  });
+  calculateCredit();
+
+  window.handleTestDrive = function() {
+    const form = document.getElementById('testdriveForm');
+    if (form.checkValidity()) {
+      alert('Заявка на тест-драйв отправлена (мок). Мы перезвоним вам.');
+      form.reset();
+      document.getElementById('testdrive').close();
+    } else {
+      alert('Пожалуйста, заполните все поля корректно.');
+    }
+  };
+
+  window.handleCreditSubmit = function() {
+    const form = document.getElementById('creditForm');
+    if (form.checkValidity()) {
+      const carId = document.getElementById('creditCarId').value;
+      const car = inventory.find(c => c.id == carId);
+      const carName = car ? `${car.make} ${car.model}` : 'выбранный автомобиль';
+      alert(`Заявка на кредит для ${carName} отправлена (мок). Менеджер свяжется с вами.`);
+      form.reset();
+      document.getElementById('creditModal').close();
+    } else {
+      alert('Пожалуйста, заполните все обязательные поля корректно.');
+    }
+  };
+
+  document.getElementById('menuBtn').addEventListener('click', () => {
+    const menu = document.getElementById('mobileMenu');
+    menu.classList.toggle('hidden');
+  });
+
+  renderCatalog(inventory);
+
+  // JSON-LD
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "AutoDealer",
+    "name": "Премьер Авто",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "ул. Автомобильная, д. 1",
+      "addressLocality": "Москва",
+      "addressCountry": "RU"
+    },
+    "telephone": "88001234567",
+    "openingHours": "Mo-Su 09:00-21:00",
+    "priceRange": "₽₽"
+  };
+  const script = document.createElement('script');
+  script.type = 'application/ld+json';
+  script.textContent = JSON.stringify(jsonLd);
+  document.head.appendChild(script);
+</script>
+
+</body>
+</html>
